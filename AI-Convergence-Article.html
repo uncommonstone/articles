@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Great Convergence: How AI Models Are Racing Toward — and Past — Human Performance</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<style>
+  :root {
+    --ink: #1a1a1a;
+    --muted: #555;
+    --bg: #fafaf7;
+    --card: #ffffff;
+    --line: #e5e5e0;
+    --accent: #c84a32;
+    --openai: #10a37f;
+    --anthropic: #d97757;
+    --google: #4285f4;
+    --deepseek: #6f42c1;
+    --meta: #1877f2;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: 'Charter', 'Georgia', 'Iowan Old Style', serif;
+    line-height: 1.65;
+    color: var(--ink);
+    background: var(--bg);
+    margin: 0;
+    padding: 0;
+  }
+  .container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+  h1 {
+    font-size: 2.3rem;
+    line-height: 1.2;
+    margin: 0 0 16px;
+    letter-spacing: -0.01em;
+  }
+  h2 {
+    font-size: 1.5rem;
+    margin: 48px 0 16px;
+    letter-spacing: -0.005em;
+  }
+  h3 {
+    font-size: 1.1rem;
+    margin: 24px 0 8px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .subtitle {
+    font-size: 1.15rem;
+    color: var(--muted);
+    font-style: italic;
+    margin-bottom: 32px;
+  }
+  hr {
+    border: none;
+    border-top: 1px solid var(--line);
+    margin: 40px 0;
+  }
+  p { margin: 0 0 16px; }
+  ul { margin: 0 0 16px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  strong { color: var(--ink); }
+  .chart-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 24px 20px 16px;
+    margin: 20px 0 28px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  }
+  .chart-wrap {
+    position: relative;
+    height: 360px;
+    width: 100%;
+  }
+  .chart-caption {
+    font-size: 0.85rem;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 12px;
+    font-style: italic;
+  }
+  .pull-quote {
+    border-left: 3px solid var(--accent);
+    padding: 8px 0 8px 18px;
+    margin: 24px 0;
+    font-style: italic;
+    color: var(--ink);
+    font-size: 1.08rem;
+  }
+  .footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-style: italic;
+    font-size: 0.95rem;
+  }
+  @media (max-width: 600px) {
+    h1 { font-size: 1.7rem; }
+    h2 { font-size: 1.25rem; }
+    .container { padding: 32px 16px 60px; }
+    .chart-wrap { height: 320px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>The Great Convergence: AI Models Are Getting Better — and Cheaper — at the Same Time</h1>
+<p class="subtitle">Three years of benchmark and pricing data, told as two converging stories.</p>
+<p style="font-size: 0.95rem; color: var(--muted); margin: -8px 0 0;">By Anand P · May 2026</p>
+
+<hr>
+
+<h2>The pattern is hard to miss</h2>
+<p>Every few weeks, a new frontier model drops. The press release celebrates a record on some benchmark. A competitor matches it within the quarter. The bar moves again.</p>
+<p>Stand back from the noise and a clearer picture emerges. Two things are converging at once.</p>
+<p>The first is capability: benchmark scores that looked like ceilings in 2023 are now starting points, and a dozen labs across the US and China are clustering at the top.</p>
+<p>The second is cost: the per-token price of frontier-grade output has dropped by more than an order of magnitude, with new entrants from China repeatedly resetting the floor.</p>
+<p>Part III steps back to look at how this same pattern played out for radio in the 1920s and the internet in the 1990s — and what happened to the dominant infrastructure companies of each era. Part IV looks forward, to the moment when chips, models, and switching costs are all commodities, and the only moat left is the price of electricity.</p>
+
+<hr>
+
+<h1 style="font-size: 1.9rem; margin: 56px 0 8px; letter-spacing: -0.01em;">Part I — Capability Convergence</h1>
+<p style="color: var(--muted); font-style: italic; margin-bottom: 24px;">Where the benchmark scores have gone, and who is pushing them.</p>
+
+<h2>1. SWE-bench Verified — Real-world coding</h2>
+<p>SWE-bench Verified asks a model to fix actual GitHub issues in real open-source repositories. In early 2023, frontier models could solve roughly 2% of these tasks. As of April 2026, the top of the leaderboard is at 87.6% (Claude Opus 4.7), and seven different labs have models inside the top ten.</p>
+<p>That's not incremental. That's a <strong>~40x improvement in three years</strong> on a benchmark specifically designed to be hard — and the field has gone from a two-lab race to a global one.</p>
+
+<div class="chart-card">
+  <div class="chart-wrap"><canvas id="sweChart"></canvas></div>
+  <div class="chart-caption">SWE-bench / SWE-bench Verified scores by model release date. Pre-June 2024 scores are from the original SWE-bench; later scores use SWE-bench Verified. All April 2026 top-10 models are plotted.</div>
+</div>
+
+<p><strong>Key milestones:</strong></p>
+<ul>
+  <li><strong>March 2023</strong> — GPT-4 launches at ~2% on the original SWE-bench</li>
+  <li><strong>June 2024</strong> — Claude 3.5 Sonnet hits 49% on SWE-bench Verified, the first major leap</li>
+  <li><strong>February 2025</strong> — Claude 3.7 Sonnet crosses 62% with extended thinking</li>
+  <li><strong>November 2025</strong> — Claude Opus 4.5 first crosses 80%</li>
+  <li><strong>December 2025 – February 2026</strong> — Chinese labs arrive at the frontier: MiniMax M2.1 (74%), then M2.5 (80.2%); Qwen3.6 Plus (78.8%) follows in April</li>
+  <li><strong>February 2026</strong> — GPT-5.3-Codex (85%) and Claude Opus 4.6 (80.8%) ship within days of each other; Gemini 3.1 Pro (80.6%) lands two weeks later</li>
+  <li><strong>April 2026</strong> — Claude Opus 4.7 sets a new high at 87.6%; Meta's Muse Spark enters the top 10 at 77.4%</li>
+</ul>
+<p>The takeaway: agentic coding benchmarks went from "can it write a function" to "can it close a real bug ticket" in roughly 30 months — and the cast of competitive labs has more than doubled.</p>
+
+<hr>
+
+<h2>2. GPQA Diamond — Graduate-level reasoning</h2>
+<p>GPQA was designed to be Google-proof. The "Diamond" subset contains questions that PhD experts in the field get right ~65% of the time, while non-experts with internet access score below 35%.</p>
+<p>In 2024, frontier models were at human-expert parity. By mid-2025 reasoning models pulled ahead, and by April 2026 the top of the leaderboard is clustered between 91% and 94% — roughly 30 points above the PhD-expert baseline.</p>
+
+<div class="chart-card">
+  <div class="chart-wrap"><canvas id="gpqaChart"></canvas></div>
+  <div class="chart-caption">GPQA Diamond scores. Dashed line marks PhD-expert baseline (~65%).</div>
+</div>
+
+<p><strong>Key milestones:</strong></p>
+<ul>
+  <li><strong>March 2024</strong> — Claude 3 Opus: 50%</li>
+  <li><strong>September 2024</strong> — o1-preview: 73%, the first model to clearly beat domain experts</li>
+  <li><strong>April 2025</strong> — o3: ~88%</li>
+  <li><strong>February 2026</strong> — Gemini 3.1 Pro: 94.1%; Claude Opus 4.6: 91.3%; GPT-5.3-Codex: 91.5%</li>
+  <li><strong>April 2026</strong> — Claude Opus 4.7: 94.2%</li>
+</ul>
+<p>This is the chart that should give you pause. A test built to require PhD-level domain knowledge is now being beaten by general-purpose models, with multiple labs converging within a percentage point of each other near the top.</p>
+
+<hr>
+
+<h2>3. AIME — Competition mathematics</h2>
+<p>AIME (American Invitational Mathematics Examination) is a high school olympiad qualifier. Top human competitors solve about 10–13 of the 15 problems. In 2024, GPT-4o solved fewer than 2. By early 2026, frontier models are scoring perfect 100%.</p>
+<p>This benchmark is, for practical purposes, finished.</p>
+
+<div class="chart-card">
+  <div class="chart-wrap"><canvas id="aimeChart"></canvas></div>
+  <div class="chart-caption">AIME 2024 / AIME 2025 accuracy by model release date.</div>
+</div>
+
+<p><strong>Key milestones:</strong></p>
+<ul>
+  <li><strong>May 2024</strong> — GPT-4o: 13% (≈2 problems)</li>
+  <li><strong>September 2024</strong> — o1-preview: 45%</li>
+  <li><strong>December 2024</strong> — o1: 83%</li>
+  <li><strong>April 2025</strong> — o3: 97% (effectively solved)</li>
+  <li><strong>November 2025</strong> — Claude Opus 4.5: 100%</li>
+  <li><strong>February 2026</strong> — GPT-5.2 Thinking: 100% without tools; Gemini 3.1 Pro: 100% with code execution</li>
+</ul>
+
+<div class="pull-quote">The jump from 13% in May 2024 to 100% in February 2026 — under two years — is, as far as I can tell, unprecedented in the history of ML benchmarks.</div>
+
+<p>The mechanism — chain-of-thought reasoning at inference time, scaled to thousands of internal steps — turned out to be a step-change, not a gradual improvement. AIME 2025 has been retired as a discriminating eval; the field has moved to FrontierMath, Putnam, and IMO-level proof generation.</p>
+
+<hr>
+
+<h2>What the capability charts say together</h2>
+<p>Three patterns repeat across every benchmark:</p>
+
+<p><strong>Convergence.</strong> The top three or four labs are within a few points of each other on most benchmarks. The "moat" narrative from 2023 looks weaker every quarter. When DeepSeek R1 matched o1 on math at a fraction of the training cost in early 2025, that wasn't an aberration — it was confirmation that frontier capability is becoming reproducible.</p>
+
+<p><strong>Saturation, then a new benchmark.</strong> MMLU saturated. HumanEval saturated. The community responds by building harder evaluations (SWE-bench → SWE-bench Verified → SWE-bench Pro; GPQA → Humanity's Last Exam). Then those saturate too. <em>We are running out of tests faster than we are running out of capability.</em></p>
+
+<p><strong>Reasoning was a phase shift.</strong> The introduction of inference-time reasoning in late 2024 (o1) didn't just bump scores — it broke benchmarks that had stalled for a year. AIME, GPQA, FrontierMath: all jumped sharply once models could "think" before answering. This is the closest thing the field has had to a paradigm shift since the original transformer.</p>
+
+<hr>
+
+<h1 style="font-size: 1.9rem; margin: 56px 0 8px; letter-spacing: -0.01em;">Part II — Cost Curve Convergence</h1>
+<p style="color: var(--muted); font-style: italic; margin-bottom: 24px;">Capability got better. Price collapsed. Then the Chinese labs arrived.</p>
+
+<p>If Part I was about the ceiling rising, Part II is about the floor dropping. Per-token prices for frontier-grade capability have fallen more than an order of magnitude since GPT-4. The most aggressive moves in 2025–2026 didn't come from US labs — they came from DeepSeek, MiniMax, Alibaba (Qwen), Moonshot (Kimi), and Zhipu (GLM), most of them charging 10–30× less than Western flagships for comparable benchmark scores.</p>
+
+<p>Two charts below show flagship public-API pricing at launch, plotted on a log y-axis because the spread spans nearly three orders of magnitude.</p>
+
+<div style="background: #fff8f0; border-left: 3px solid var(--accent); padding: 12px 16px; margin: 16px 0 24px; font-size: 0.95rem;">
+  <strong>Quick definitions.</strong> <em>Input tokens</em> are what you send to the model — your prompt, system instructions, attached documents, and prior turns of a conversation. <em>Output tokens</em> are what the model generates back. Output is almost always priced 4–8× higher than input because each output token requires a sequential forward pass through the model, while input tokens are processed in parallel. Most workloads are heavy on input volume (long prompts, big context) but output cost dominates the per-request bill.
+</div>
+
+<h2>1. Input price per million tokens</h2>
+
+<div class="chart-card">
+  <div class="chart-wrap"><canvas id="inputPriceChart"></canvas></div>
+  <div class="chart-caption">Input token price ($ per 1M tokens), log scale. Each dot is a flagship model at launch.</div>
+</div>
+
+<h2>2. Output price per million tokens</h2>
+
+<div class="chart-card">
+  <div class="chart-wrap"><canvas id="outputPriceChart"></canvas></div>
+  <div class="chart-caption">Output token price ($ per 1M tokens), log scale. Output is the dominant cost for most workloads — and it has fallen even further than input prices for non-reasoning models.</div>
+</div>
+
+<h2>What the cost charts say</h2>
+
+<p><strong>~25× drop in flagship input price.</strong> OpenAI's flagship went from $30/M (GPT-4, March 2023) to $1.25/M (GPT-5, August 2025). Anthropic followed a similar arc — Claude 2 at $8/M to Claude Sonnet 4.5 at $3/M with vastly better capability.</p>
+
+<p><strong>The Chinese floor.</strong> DeepSeek R1 (Jan 2025) launched at $0.55/M input — roughly 50× cheaper than o1 with comparable math performance. By 2026, MiniMax M2.5 ($0.15/$0.95) and Kimi K2 ($0.20/$3.25) are an additional 3–4× cheaper than DeepSeek. Qwen 3.6 Plus from Alibaba sits between them at $0.325/$1.95. These models are not far from the Western frontier on benchmarks — and they are an order of magnitude cheaper to run.</p>
+
+<p><strong>Reasoning models reversed the trend — briefly.</strong> o1 and Claude Opus 4 held "premium" pricing ($15/$60–$75) for state-of-the-art reasoning. By late 2025 Anthropic cut Opus to $5/$25 and OpenAI rolled o3 into GPT-5 at $1.25/$10. Premium tiers compressed.</p>
+
+<p><strong>The trend just bent — slightly.</strong> OpenAI's GPT-5.5 (April 23, 2026) raised input prices from $2.50 to $5.00 and output from $15 to $30 — the first significant flagship price <em>increase</em> in three years. The signal: when frontier capability is genuinely scarce, labs will charge for it again. But Anthropic, Google, and the Chinese labs have not followed.</p>
+
+<div class="pull-quote">A task that cost $1 to run on GPT-4 in 2023 costs about 4¢ on GPT-5 in 2025 — and on MiniMax M2.5 it costs less than 1¢ in 2026. The capability gap between those three answers is the smallest of the three numbers.</div>
+
+<p><strong>Effective cost per unit of capability is dropping even faster than the per-token price.</strong> When you factor in that newer models use fewer tokens to solve a problem (better reasoning means less back-and-forth), the cost-per-completed-task curve is closer to 5–10× per year.</p>
+
+<h2>A note on token comparability</h2>
+<p>Every chart and table in Part II compares prices "per million tokens" — but a token is not a standardized unit. Each lab uses its own tokenizer, and the same English sentence can encode to different counts depending on the model:</p>
+<ul>
+  <li>OpenAI's <code>cl100k_base</code> and <code>o200k_base</code> encode typical English at roughly 0.75 tokens per word.</li>
+  <li>Anthropic's tokenizer historically ran ~10% denser than OpenAI's; the new tokenizer shipped with Claude Opus 4.7 inflates token counts by up to 35% on identical text.</li>
+  <li>Google's Gemini tokenizer is closer to OpenAI's but counts images, video frames, and audio differently.</li>
+  <li>Chinese-trained models (DeepSeek, Qwen, MiniMax) generally encode English at slightly higher token counts and Chinese at much lower counts than Western tokenizers.</li>
+</ul>
+<p>The practical implication: a 30% headline-price gap between two providers can disappear or invert once you account for tokenizer differences on your actual workload. Apples-to-apples cost comparison requires either running the same prompts through each provider's tokenizer, or measuring in dollars-per-completed-task rather than dollars-per-token.</p>
+<p>None of this changes the macro story. <strong>Even with a 35% tokenizer-inflation adjustment, prices have still fallen by more than an order of magnitude since 2023</strong>, and the spread between Chinese and Western flagships is wider than any reasonable tokenizer correction can close. The signal is real; the noise is in the second decimal place.</p>
+
+<hr>
+
+<h1 style="font-size: 1.9rem; margin: 56px 0 8px; letter-spacing: -0.01em;">Part III — The Historical Pattern: Radio, Internet, and AI</h1>
+<p style="color: var(--muted); font-style: italic; margin-bottom: 24px;">Every general-purpose technology runs the same playbook. The companies usually don't.</p>
+
+<p>The capability and cost curves above tell a story most general-purpose technologies have already lived through: explosive capability growth, frantic capex, sky-high market caps for a small cohort of "picks and shovels" companies, then commoditization. The technology survives. Most of the companies don't.</p>
+
+<p>Two precedents are worth looking at closely: the radio boom of the 1920s and the dot-com era of the late 1990s. The chart below shows what happened to the dominant infrastructure stock in each era from peak to trough.</p>
+
+<div class="chart-card">
+  <div class="chart-wrap"><canvas id="bubbleChart"></canvas></div>
+  <div class="chart-caption">Peak-to-trough decline of the era-defining infrastructure stock. NVIDIA shown as the current AI cycle's analogue, drawdown TBD.</div>
+</div>
+
+<h2>1. Radio (1922–1932)</h2>
+
+<p>Radio was the AI of the 1920s — a general-purpose technology that promised to remake everything, attracted a flood of capital, and minted hundreds of public companies. By 1925 there were over 700 radio manufacturers in the US.</p>
+
+<p><strong>The dominant company:</strong> <strong>Radio Corporation of America (RCA)</strong>. Vertically integrated — chip equivalents (vacuum tubes), the device (radio receivers), and the platform (NBC broadcasting network, founded by RCA in 1926). The closest analogue today is a single entity combining NVIDIA, Apple, and a dominant model lab.</p>
+
+<p><strong>The capex.</strong> RCA and competitors poured money into manufacturing capacity, broadcast infrastructure, and station construction. Capex was enormous and largely speculative — much of the receiver capacity built in 1928–29 was never used.</p>
+
+<p><strong>The bubble.</strong> RCA stock rose from $5.83 in 1921 to a split-adjusted equivalent of over $500 by September 1929 — a 200× run, one of the largest in market history. At peak, RCA was the speculative darling. Companies could add "radio" to their name and watch their stock double.</p>
+
+<p><strong>The bust.</strong> RCA fell 98% from its September 1929 peak of $114.75 to $2.50 by May 1932. The drawdown took about 32 months. RCA's dividend-adjusted price did not recover to 1929 levels until the 1960s.</p>
+
+<p><strong>What survived.</strong> RCA itself, transformed and eventually broken up by antitrust in 1932 (forced to divest). Most smaller manufacturers — Kolster, Atwater Kent, Crosley as a dominant — went bankrupt or were absorbed. The radio itself became a $20 commodity within a decade.</p>
+
+<h2>2. Internet (1995–2002)</h2>
+
+<p>The most direct analogue, and the most recent, so the data is cleanest.</p>
+
+<p><strong>The dominant infrastructure companies:</strong> <strong>Cisco</strong> (routers and switches — the "picks and shovels" of the internet), <strong>Lucent</strong> (telecom equipment), <strong>Nortel</strong> (optical networking and telecom). These are the closest direct analogues to NVIDIA and the hyperscaler data-center buildout today.</p>
+
+<p><strong>The dominant consumer plays:</strong> <strong>AOL</strong>, Yahoo, Pets.com, Webvan, eToys, Boo.com. AOL merged with Time Warner in January 2000 in a $164B deal that became the symbolic peak.</p>
+
+<p><strong>The capex.</strong> Telecom companies overbuilt fiber catastrophically — by 2002, an estimated 95–98% of laid fiber was "dark" (unused). Sound familiar? Hyperscalers are currently spending a combined $300B+ per year on data centers and GPUs, much of it on infrastructure that won't be saturated for years.</p>
+
+<p><strong>The bubble.</strong> Cisco hit $80.06 on March 27, 2000 — the most valuable public company in the world at $569B market cap. NASDAQ peaked at 5,048 on March 10, 2000.</p>
+
+<p><strong>The bust.</strong> Cisco fell 88%, from $80 to $9.50, over about 30 months. Nortel collapsed from C$398B to under C$5B (-98%) and eventually went bankrupt in 2009. Lucent fell from $84 to $0.56 — a 99% decline — and was eventually merged into Alcatel. AOL was effectively dissolved into Time Warner. The NASDAQ as a whole fell 78% peak to trough.</p>
+
+<p><strong>What survived.</strong> The internet itself — broadband became a utility-priced commodity. Cisco still exists; its stock did not reclaim its March 2000 peak until <em>December 2025</em>, more than 25 years later. Amazon (down 95% in the bust) and a handful of others built durable businesses on top of the commoditized infrastructure.</p>
+
+<h2>Where AI sits in this pattern</h2>
+
+<p>Comparing analogues directly:</p>
+
+<ul>
+  <li><strong>NVIDIA ≈ Cisco / RCA</strong>. The era-defining infrastructure provider. Highest market cap. Most exposed in any drawdown. Peaked-to-trough is the question, not the direction.</li>
+  <li><strong>OpenAI / Anthropic ≈ AOL / Yahoo, possibly Amazon / Google</strong>. Consumer- and developer-facing platforms. The historical track record says about 1 in 5 of these survives the eventual commoditization with their dominance intact.</li>
+  <li><strong>Hyperscaler data-center capex ≈ 1990s telecom fiber buildout</strong>. Currently $300B+/year. The fiber overbuild led to a 95% utilization gap and bankrupted half the telecom industry. Whether AI compute follows the same path depends on inference demand, which is — so far — growing faster than capacity.</li>
+  <li><strong>DeepSeek, MiniMax, Qwen, Kimi ≈ disruptive low-cost challengers</strong>, in the mold of Japanese automakers and electronics manufacturers entering Western markets in the 1970s. Cheaper, increasingly competitive on quality, structurally lower-cost. They rarely take #1 immediately — they redraw the cost curve and reshape the industry over a decade.</li>
+</ul>
+
+<div class="pull-quote">In every prior cycle, the technology won and most of the companies lost. The dominant infrastructure stock fell 88–99% from peak. The product became a commodity within 10–20 years. The investors who bought at the top waited 25+ years to break even, if they ever did.</div>
+
+<p>None of this tells you when, or even whether, the AI cycle will follow the same trajectory. Two things make AI different in ways that <em>could</em> matter: the technology is still meaningfully improving on capability (radio and TV plateaued early), and the dominant platforms have stronger network effects than fiber or vacuum tubes ever did. Two things make it look the same: capex is enormous and partly speculative, and the price collapse from new entrants is happening exactly on schedule.</p>
+
+<hr>
+
+<h1 style="font-size: 1.9rem; margin: 56px 0 8px; letter-spacing: -0.01em;">Part IV — The Future: When Compute Is a Commodity, Electricity Is the Moat</h1>
+<p style="color: var(--muted); font-style: italic; margin-bottom: 24px;">Three things are commoditizing in parallel. What's left is the power bill.</p>
+
+<p>If you stack the trends from Parts I, II, and III, a clean prediction falls out. Three independent forces are commoditizing at the same time:</p>
+
+<ol>
+  <li><strong>Chips.</strong> NVIDIA still dominates AI training, but AMD MI400 series, Intel Gaudi 4, Google TPU v7, AWS Trainium 3, Microsoft Maia, Apple Silicon, plus Cerebras, Groq, SambaNova, Tenstorrent, and Chinese alternatives (Huawei Ascend, Cambricon, Moore Threads) are all shipping in 2026. By 2028 there will be a dozen credible AI chip vendors, the same way there are a dozen credible CPU vendors today.</li>
+  <li><strong>Models.</strong> Part I showed it directly. Seven labs are inside the SWE-bench top 10 within a few points of each other. GPQA and AIME are saturated. Capability differentiation between flagship models is now measured in single percentage points.</li>
+  <li><strong>Switching.</strong> The OpenAI API spec has become the de-facto interface. OpenRouter, LiteLLM, Vercel AI SDK, LangChain, and dozens of model gateways let you swap providers with a one-line config change. Multi-provider routing — picking the cheapest model that meets your latency and quality bar per request — is now standard infrastructure, not exotic engineering.</li>
+</ol>
+
+<p>When chips are commodity, models are interchangeable, and switching costs are zero, only one variable matters for unit economics: the cost of running the compute. And that is overwhelmingly the cost of electricity.</p>
+
+<h2>The cost stack today vs the cost stack tomorrow</h2>
+
+<p>Today, AI inference at hyperscale is dominated by chip amortization — GPUs are still scarce and expensive, and a single H200 or B200 costs $30–40K with a 3–5 year useful life. Electricity is the second-largest line item but well below the chip bill.</p>
+
+<p>As chip supply normalizes and prices fall (the same way DRAM, then SSDs, then CPUs each commoditized), chip amortization shrinks as a share of total cost. Electricity does not — and as model utilization rises, it grows in absolute terms. By the late 2020s, electricity is the dominant operating cost line for any serious inference workload.</p>
+
+<div class="chart-card">
+  <div class="chart-wrap"><canvas id="costStackChart"></canvas></div>
+  <div class="chart-caption">Approximate operating cost breakdown for AI inference at hyperscale, today vs. after chip commoditization. Stylized — exact ratios depend on workload, region, and chip generation.</div>
+</div>
+
+<h2>Whoever has cheap electricity wins</h2>
+
+<p>This is already showing up in capital allocation. The biggest 2025–2026 stories in AI infrastructure are not about chips. They are about power:</p>
+
+<ul>
+  <li><strong>Microsoft</strong> signed a 20-year PPA to restart the Three Mile Island nuclear plant for AI datacenters (announced Sep 2024).</li>
+  <li><strong>Amazon</strong> bought a nuclear-powered data center campus from Talen Energy and signed nuclear PPAs for additional capacity.</li>
+  <li><strong>Google</strong> contracted Kairos Power for small modular reactors specifically for AI workloads.</li>
+  <li><strong>xAI's Colossus cluster</strong> in Memphis runs on on-site gas turbines because grid capacity could not be allocated fast enough — a clear signal that <em>power, not chips</em>, is now the binding constraint.</li>
+  <li><strong>UAE and Saudi Arabia</strong> are positioning sovereign AI infrastructure around their cheap energy, with Saudi's HUMAIN ($100B+ commitment) and UAE's G42 building gigawatt-scale AI campuses powered by gas and solar.</li>
+  <li><strong>China</strong> is building AI data centers preferentially in its western provinces (Inner Mongolia, Xinjiang, Sichuan) with abundant hydro, wind, and solar — capacity that costs ~$0.04/kWh versus ~$0.10/kWh in eastern coastal cities.</li>
+</ul>
+
+<p>The geographic rank order for sustained AI inference cost looks something like this:</p>
+
+<ul>
+  <li><strong>Tier 1 (lowest cost):</strong> Iceland, Norway, Quebec, Pacific Northwest US, Texas (deregulated grid, cheap gas + wind), western China, Middle East with new solar + gas builds. Industrial power often $0.03–0.06/kWh.</li>
+  <li><strong>Tier 2:</strong> Most of the US South and Midwest, France (nuclear), South Korea, Taiwan. $0.06–0.10/kWh.</li>
+  <li><strong>Tier 3 (highest cost):</strong> Germany (post-nuclear shutdown, gas-dependent), UK, Italy, Japan, California (regulated retail rates). $0.15–0.30/kWh.</li>
+</ul>
+
+<div class="pull-quote">A Tier 1 location runs the same inference workload at one-fifth the marginal electricity cost of a Tier 3 location. When chip amortization is no longer the dominant line item, that 5× spread translates almost directly to gross margin.</div>
+
+<p>The implication for the industry: the labs that win the next decade will not necessarily be the ones with the smartest model. They will be the ones with the cheapest watts. Vertical integration — own the chip, own the model, own the data center, own the power source — becomes the durable form of moat. This is exactly what we are watching the hyperscalers race to build, and what nation-state AI strategies (Saudi, UAE, China, France) are quietly orienting around.</p>
+
+<p>For developers and businesses, the inverse is also true: <em>switching providers will become trivial, and you should never lock in</em>. Build against the OpenAI API spec, route through a gateway, and let providers compete for your traffic. The 10× cost spread between flagship Western models and Chinese flagships in 2026 is small compared to what's coming once electricity, not capability, sets the price.</p>
+
+<hr>
+
+<h1 style="font-size: 1.9rem; margin: 56px 0 8px; letter-spacing: -0.01em;">Closing — Who Actually Wins</h1>
+<p style="color: var(--muted); font-style: italic; margin-bottom: 24px;">If the historical pattern holds, the durable winners aren't the ones building today.</p>
+
+<p>Here is the uncomfortable conclusion that follows from Parts I through IV.</p>
+
+<p>The labs and hyperscalers spending hundreds of billions of dollars on GPUs, data centers, and power contracts in 2025–2026 are not the ones who will own the AI economy in 2035. They are the ones absorbing the buildout cost — paying full sticker for B200s, signing 20-year nuclear PPAs at peak prices, leasing sites at peak rents. Most of that capex was speculative in 1929. Most of it was speculative in 1999. Most of it is probably speculative now.</p>
+
+<p><strong>The true winners will be the ones who buy these chips for cents on the dollar</strong> — through bankruptcy sales of overbuilt data centers, through fire-sale auctions when one or two of today's frontier labs run out of cash, or directly from chip makers stuck with excess inventory after the next demand correction. The fiber that bankrupted Lucent and Nortel in 2002 was bought by Google for pennies and quietly turned into the backbone of YouTube. The data center capacity that Enron, WorldCom, and Global Crossing built and lost is still in service today — owned by companies that did not pay for it.</p>
+
+<p>Picture Warren Buffett, or whoever the next-generation equivalent is, walking into a hyperscaler bankruptcy auction in 2029 and scooping up gigawatts of fully-built, fully-powered data centers and racks of last-generation accelerators for cents on the dollar. That is what 2002 looked like for fiber. That is what 1932 looked like for radio manufacturing. That is what the 2030s probably look like for AI infrastructure.</p>
+
+<p><strong>The tech giants of the last cycle are turning into Ciscos.</strong> They are too big to disappear, but they have already absorbed the capex. They are the ones whose stocks fall sharply in the bust and take 25 years to recover, even as the underlying technology keeps growing. The companies that look most like the next generation of tech giants are not yet public. Some of them are not yet founded. They will be the ones who emerge after the bust, build on cheap infrastructure they did not pay to construct, and run on commodity electricity in places nobody is talking about today.</p>
+
+<div class="pull-quote">The capability is converging. The cost is converging. The capex is being burned right now. The next tech giants have not been built yet — and the conditions to build them will be best after the current cycle resets.</div>
+
+<p>That is the historical pattern. It is not a prediction about timing. AI may be the cycle that finally breaks the pattern — capability is still improving, network effects are stronger than any prior platform, and demand may genuinely outpace the buildout. But for any of those exceptions to be true, the curves above have to bend. So far, they have not.</p>
+
+<p>The convergence — on capability, and on cost — is real. The ceiling, so far, isn't. And the most expensive seat in any tech revolution has always been the one held during the buildout, not the one bought after the bust.</p>
+
+</div>
+
+<script>
+const LAB = {
+  openai:    '#10a37f',
+  anthropic: '#d97757',
+  google:    '#4285f4',
+  deepseek:  '#6f42c1',
+  meta:      '#1877f2',
+  minimax:   '#e63946',
+  alibaba:   '#ff9500',
+  xai:       '#222222',
+  moonshot:  '#8b5a2b',
+  zhipu:     '#00b4d8',
+};
+
+// Build dataset. Points: [ "YYYY-MM-DD", score, "Model name" ]
+function ds(label, color, points) {
+  // Sort chronologically by actual date
+  const sorted = [...points].sort((a, b) => new Date(a[0]) - new Date(b[0]));
+  return {
+    label: label,
+    data: sorted.map(p => ({ x: p[0], y: p[1], model: p[2] })),
+    backgroundColor: color,
+    borderColor: color,
+    pointRadius: 6,
+    pointHoverRadius: 9,
+    showLine: true,
+    borderWidth: 2,
+    tension: 0.15
+  };
+}
+
+// Log-scale chart for prices. Same shape as makeChart but y-axis is logarithmic and tooltips show $.
+function makePriceChart(canvasId, datasets, yLabel) {
+  const finalDatasets = datasets.slice();
+  new Chart(document.getElementById(canvasId), {
+    type: 'line',
+    data: { datasets: finalDatasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { usePointStyle: true, padding: 14, font: { size: 12 } }
+        },
+        tooltip: {
+          callbacks: {
+            title: function(ctxs) {
+              const d = new Date(ctxs[0].raw.x);
+              return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            },
+            label: function(ctx) {
+              return `${ctx.raw.model}: $${ctx.raw.y}/M tokens`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            unit: 'quarter',
+            tooltipFormat: 'MMM yyyy',
+            displayFormats: { quarter: 'MMM yyyy', month: 'MMM yyyy' }
+          },
+          min: '2023-01-01',
+          title: { display: true, text: 'Release date', color: '#666', font: { size: 11 } },
+          grid: { color: '#f0f0eb' },
+          ticks: { color: '#666', font: { size: 10 }, maxRotation: 0 }
+        },
+        y: {
+          type: 'logarithmic',
+          min: 0.1,
+          max: 100,
+          title: { display: true, text: yLabel, color: '#666', font: { size: 11 } },
+          grid: { color: '#f0f0eb' },
+          ticks: {
+            color: '#666',
+            font: { size: 10 },
+            callback: function(v) {
+              if ([0.1, 0.5, 1, 2, 5, 10, 20, 50, 100].includes(v)) return '$' + v;
+              return null;
+            }
+          }
+        }
+      }
+    }
+  });
+}
+
+function makeChart(canvasId, datasets, yLabel, humanBaseline) {
+  // Compute global date range across all datasets
+  const allDates = datasets.flatMap(d => d.data.map(p => new Date(p.x).getTime()));
+  const minD = new Date(Math.min(...allDates));
+  const maxD = new Date(Math.max(...allDates));
+
+  // Add a small horizontal-line dataset for the human baseline
+  const finalDatasets = datasets.slice();
+  if (humanBaseline) {
+    finalDatasets.push({
+      label: humanBaseline.label,
+      data: [
+        { x: minD.toISOString().slice(0,10), y: humanBaseline.value, model: humanBaseline.label },
+        { x: maxD.toISOString().slice(0,10), y: humanBaseline.value, model: humanBaseline.label }
+      ],
+      borderColor: '#888',
+      backgroundColor: 'transparent',
+      borderDash: [6, 4],
+      borderWidth: 1.5,
+      pointRadius: 0,
+      pointHoverRadius: 0,
+      showLine: true,
+      fill: false,
+      tension: 0
+    });
+  }
+
+  new Chart(document.getElementById(canvasId), {
+    type: 'line',
+    data: { datasets: finalDatasets },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { usePointStyle: true, padding: 14, font: { size: 12 } }
+        },
+        tooltip: {
+          callbacks: {
+            title: function(ctxs) {
+              const d = new Date(ctxs[0].raw.x);
+              return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+            },
+            label: function(ctx) {
+              return `${ctx.raw.model}: ${ctx.raw.y}%`;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          type: 'time',
+          time: {
+            unit: 'quarter',
+            tooltipFormat: 'MMM yyyy',
+            displayFormats: { quarter: 'MMM yyyy', month: 'MMM yyyy' }
+          },
+          min: '2023-01-01',
+          title: { display: true, text: 'Release date', color: '#666', font: { size: 11 } },
+          grid: { color: '#f0f0eb' },
+          ticks: { color: '#666', font: { size: 10 }, maxRotation: 0 }
+        },
+        y: {
+          beginAtZero: true,
+          max: 100,
+          title: { display: true, text: yLabel, color: '#666', font: { size: 11 } },
+          grid: { color: '#f0f0eb' },
+          ticks: { color: '#666', font: { size: 10 }, callback: v => v + '%' }
+        }
+      }
+    }
+  });
+}
+
+// ---------------- DATA ----------------
+// All dates are actual public release / announcement dates.
+
+// SWE-bench (pre-Aug 2024) / SWE-bench Verified (post). All current top-10 models included.
+const sweData = {
+  openai: [
+    ['2023-03-14', 2,    'GPT-4'],
+    ['2024-05-13', 33,   'GPT-4o'],
+    ['2024-12-05', 49,   'o1'],
+    ['2025-04-16', 72,   'o3'],
+    ['2025-08-07', 75,   'GPT-5'],
+    ['2026-02-02', 80.0, 'GPT-5.2'],
+    ['2026-02-05', 85.0, 'GPT-5.3-Codex']
+  ],
+  anthropic: [
+    ['2023-07-11', 4,    'Claude 2'],
+    ['2024-03-04', 12,   'Claude 3 Opus'],
+    ['2024-06-20', 49,   'Claude 3.5 Sonnet'],
+    ['2024-10-22', 50,   'Claude 3.5 Sonnet (new)'],
+    ['2025-02-24', 62,   'Claude 3.7 Sonnet'],
+    ['2025-05-22', 72,   'Claude Opus 4'],
+    ['2025-09-29', 77,   'Claude Sonnet 4.5'],
+    ['2025-11-24', 80.9, 'Claude Opus 4.5'],
+    ['2026-02-05', 80.8, 'Claude Opus 4.6'],
+    ['2026-04-16', 87.6, 'Claude Opus 4.7']
+  ],
+  google: [
+    ['2024-02-15', 14,   'Gemini 1.5 Pro'],
+    ['2024-12-11', 36,   'Gemini 2.0'],
+    ['2025-03-25', 64,   'Gemini 2.5 Pro'],
+    ['2026-02-19', 80.6, 'Gemini 3.1 Pro']
+  ],
+  deepseek: [
+    ['2025-01-20', 49,   'DeepSeek R1']
+  ],
+  minimax: [
+    ['2025-12-23', 74,   'MiniMax M2.1'],
+    ['2026-02-17', 80.2, 'MiniMax M2.5']
+  ],
+  alibaba: [
+    ['2026-04-20', 78.8, 'Qwen3.6 Plus']
+  ],
+  meta: [
+    ['2026-04-08', 77.4, 'Muse Spark']
+  ]
+};
+
+makeChart('sweChart', [
+  ds('OpenAI',    LAB.openai,    sweData.openai),
+  ds('Anthropic', LAB.anthropic, sweData.anthropic),
+  ds('Google',    LAB.google,    sweData.google),
+  ds('DeepSeek',  LAB.deepseek,  sweData.deepseek),
+  ds('MiniMax',   LAB.minimax,   sweData.minimax),
+  ds('Alibaba',   LAB.alibaba,   sweData.alibaba),
+  ds('Meta',      LAB.meta,      sweData.meta)
+], 'SWE-bench score');
+
+// GPQA Diamond
+const gpqaData = {
+  openai: [
+    ['2023-03-14', 36,   'GPT-4'],
+    ['2024-05-13', 54,   'GPT-4o'],
+    ['2024-09-12', 73,   'o1-preview'],
+    ['2024-12-05', 76,   'o1'],
+    ['2025-04-16', 88,   'o3'],
+    ['2025-08-07', 89,   'GPT-5'],
+    ['2026-02-05', 91.5, 'GPT-5.3-Codex'],
+    ['2026-03-15', 92.0, 'GPT-5.4']
+  ],
+  anthropic: [
+    ['2024-03-04', 50,   'Claude 3 Opus'],
+    ['2024-06-20', 59,   'Claude 3.5 Sonnet'],
+    ['2024-10-22', 65,   'Claude 3.5 Sonnet (new)'],
+    ['2025-02-24', 78,   'Claude 3.7 Sonnet'],
+    ['2025-05-22', 84,   'Claude Opus 4'],
+    ['2025-11-24', 87.0, 'Claude Opus 4.5'],
+    ['2026-02-05', 91.3, 'Claude Opus 4.6'],
+    ['2026-04-16', 94.2, 'Claude Opus 4.7']
+  ],
+  google: [
+    ['2024-02-15', 41,   'Gemini 1.5 Pro'],
+    ['2024-12-11', 62,   'Gemini 2.0'],
+    ['2025-03-25', 84,   'Gemini 2.5 Pro'],
+    ['2026-02-19', 94.1, 'Gemini 3.1 Pro']
+  ],
+  deepseek: [
+    ['2025-01-20', 71,   'DeepSeek R1']
+  ],
+  minimax: [
+    ['2026-02-17', 85.2, 'MiniMax M2.5']
+  ]
+};
+
+makeChart('gpqaChart', [
+  ds('OpenAI',    LAB.openai,    gpqaData.openai),
+  ds('Anthropic', LAB.anthropic, gpqaData.anthropic),
+  ds('Google',    LAB.google,    gpqaData.google),
+  ds('DeepSeek',  LAB.deepseek,  gpqaData.deepseek),
+  ds('MiniMax',   LAB.minimax,   gpqaData.minimax)
+], 'GPQA Diamond score', { value: 65, label: 'PhD expert (~65%)' });
+
+// AIME (2024 → 2025)
+const aimeData = {
+  openai: [
+    ['2024-05-13', 13,  'GPT-4o'],
+    ['2024-09-12', 45,  'o1-preview'],
+    ['2024-12-05', 83,  'o1'],
+    ['2025-04-16', 97,  'o3'],
+    ['2025-08-07', 95,  'GPT-5'],
+    ['2026-02-02', 100, 'GPT-5.2 (Thinking)'],
+    ['2026-02-05', 100, 'GPT-5.3-Codex']
+  ],
+  anthropic: [
+    ['2024-06-20', 16,  'Claude 3.5 Sonnet'],
+    ['2025-02-24', 61,  'Claude 3.7 Sonnet (think)'],
+    ['2025-05-22', 75,  'Claude Opus 4'],
+    ['2025-11-24', 100, 'Claude Opus 4.5'],
+    ['2026-04-16', 100, 'Claude Opus 4.7']
+  ],
+  google: [
+    ['2024-12-11', 30,  'Gemini 2.0'],
+    ['2025-03-25', 86,  'Gemini 2.5 Pro'],
+    ['2026-02-19', 100, 'Gemini 3.1 Pro (w/ tools)']
+  ],
+  deepseek: [
+    ['2025-01-20', 80,  'DeepSeek R1']
+  ],
+  minimax: [
+    ['2026-02-17', 94,  'MiniMax M2.5']
+  ]
+};
+
+makeChart('aimeChart', [
+  ds('OpenAI',    LAB.openai,    aimeData.openai),
+  ds('Anthropic', LAB.anthropic, aimeData.anthropic),
+  ds('Google',    LAB.google,    aimeData.google),
+  ds('DeepSeek',  LAB.deepseek,  aimeData.deepseek),
+  ds('MiniMax',   LAB.minimax,   aimeData.minimax)
+], 'AIME accuracy', { value: 85, label: 'Top human competitor (~85%)' });
+
+// ---------------- COST CURVES ----------------
+// Flagship public-API prices at launch ($ per 1M tokens). Shape: [date, price, model]
+
+const inputPriceData = {
+  openai: [
+    ['2023-03-14', 30.00, 'GPT-4'],
+    ['2023-11-06', 10.00, 'GPT-4 Turbo'],
+    ['2024-05-13', 2.50,  'GPT-4o'],
+    ['2024-09-12', 15.00, 'o1-preview'],
+    ['2024-12-05', 15.00, 'o1'],
+    ['2025-04-16', 10.00, 'o3'],
+    ['2025-08-07', 1.25,  'GPT-5'],
+    ['2025-12-10', 1.75,  'GPT-5.2'],
+    ['2026-04-23', 5.00,  'GPT-5.5']
+  ],
+  anthropic: [
+    ['2023-07-11', 8.00,  'Claude 2'],
+    ['2024-03-04', 15.00, 'Claude 3 Opus'],
+    ['2024-06-20', 3.00,  'Claude 3.5 Sonnet'],
+    ['2025-02-24', 3.00,  'Claude 3.7 Sonnet'],
+    ['2025-05-22', 15.00, 'Claude Opus 4'],
+    ['2025-09-29', 3.00,  'Claude Sonnet 4.5'],
+    ['2025-11-24', 5.00,  'Claude Opus 4.5'],
+    ['2026-02-05', 5.00,  'Claude Opus 4.6'],
+    ['2026-04-16', 5.00,  'Claude Opus 4.7']
+  ],
+  google: [
+    ['2023-12-06', 0.50,  'Gemini Pro'],
+    ['2024-02-15', 1.25,  'Gemini 1.5 Pro'],
+    ['2024-12-11', 1.25,  'Gemini 2.0 Pro'],
+    ['2025-03-25', 1.25,  'Gemini 2.5 Pro'],
+    ['2026-02-19', 2.00,  'Gemini 3.1 Pro']
+  ],
+  deepseek: [
+    ['2024-12-26', 0.27,  'DeepSeek V3'],
+    ['2025-01-20', 0.55,  'DeepSeek R1']
+  ],
+  minimax: [
+    ['2025-10-27', 0.255, 'MiniMax M2'],
+    ['2026-02-17', 0.15,  'MiniMax M2.5']
+  ],
+  alibaba: [
+    ['2025-09-05', 0.78,  'Qwen3 Max'],
+    ['2026-04-20', 0.325, 'Qwen3.6 Plus']
+  ],
+  xai: [
+    ['2024-08-14', 5.00,  'Grok 2'],
+    ['2025-02-19', 3.00,  'Grok 3'],
+    ['2025-07-09', 3.00,  'Grok 4'],
+    ['2026-01-15', 0.20,  'Grok 4.1 Fast']
+  ],
+  moonshot: [
+    ['2025-07-11', 0.195, 'Kimi K2']
+  ],
+  zhipu: [
+    ['2025-08-15', 0.78,  'GLM-4.5']
+  ]
+};
+
+const outputPriceData = {
+  openai: [
+    ['2023-03-14', 60.00, 'GPT-4'],
+    ['2023-11-06', 30.00, 'GPT-4 Turbo'],
+    ['2024-05-13', 10.00, 'GPT-4o'],
+    ['2024-09-12', 60.00, 'o1-preview'],
+    ['2024-12-05', 60.00, 'o1'],
+    ['2025-04-16', 40.00, 'o3'],
+    ['2025-08-07', 10.00, 'GPT-5'],
+    ['2025-12-10', 14.00, 'GPT-5.2'],
+    ['2026-04-23', 30.00, 'GPT-5.5']
+  ],
+  anthropic: [
+    ['2023-07-11', 24.00, 'Claude 2'],
+    ['2024-03-04', 75.00, 'Claude 3 Opus'],
+    ['2024-06-20', 15.00, 'Claude 3.5 Sonnet'],
+    ['2025-02-24', 15.00, 'Claude 3.7 Sonnet'],
+    ['2025-05-22', 75.00, 'Claude Opus 4'],
+    ['2025-09-29', 15.00, 'Claude Sonnet 4.5'],
+    ['2025-11-24', 25.00, 'Claude Opus 4.5'],
+    ['2026-02-05', 25.00, 'Claude Opus 4.6'],
+    ['2026-04-16', 25.00, 'Claude Opus 4.7']
+  ],
+  google: [
+    ['2023-12-06', 1.50,  'Gemini Pro'],
+    ['2024-02-15', 5.00,  'Gemini 1.5 Pro'],
+    ['2024-12-11', 5.00,  'Gemini 2.0 Pro'],
+    ['2025-03-25', 10.00, 'Gemini 2.5 Pro'],
+    ['2026-02-19', 12.00, 'Gemini 3.1 Pro']
+  ],
+  deepseek: [
+    ['2024-12-26', 1.10,  'DeepSeek V3'],
+    ['2025-01-20', 2.19,  'DeepSeek R1']
+  ],
+  minimax: [
+    ['2025-10-27', 1.00,  'MiniMax M2'],
+    ['2026-02-17', 0.95,  'MiniMax M2.5']
+  ],
+  alibaba: [
+    ['2025-09-05', 3.90,  'Qwen3 Max'],
+    ['2026-04-20', 1.95,  'Qwen3.6 Plus']
+  ],
+  xai: [
+    ['2024-08-14', 15.00, 'Grok 2'],
+    ['2025-02-19', 15.00, 'Grok 3'],
+    ['2025-07-09', 15.00, 'Grok 4'],
+    ['2026-01-15', 0.50,  'Grok 4.1 Fast']
+  ],
+  moonshot: [
+    ['2025-07-11', 3.25,  'Kimi K2']
+  ],
+  zhipu: [
+    ['2025-08-15', 2.86,  'GLM-4.5']
+  ]
+};
+
+makePriceChart('inputPriceChart', [
+  ds('OpenAI',    LAB.openai,    inputPriceData.openai),
+  ds('Anthropic', LAB.anthropic, inputPriceData.anthropic),
+  ds('Google',    LAB.google,    inputPriceData.google),
+  ds('DeepSeek',  LAB.deepseek,  inputPriceData.deepseek),
+  ds('MiniMax',   LAB.minimax,   inputPriceData.minimax),
+  ds('Alibaba',   LAB.alibaba,   inputPriceData.alibaba),
+  ds('xAI',       LAB.xai,       inputPriceData.xai),
+  ds('Moonshot',  LAB.moonshot,  inputPriceData.moonshot),
+  ds('Zhipu',     LAB.zhipu,     inputPriceData.zhipu)
+], 'Input price ($/1M tokens)');
+
+makePriceChart('outputPriceChart', [
+  ds('OpenAI',    LAB.openai,    outputPriceData.openai),
+  ds('Anthropic', LAB.anthropic, outputPriceData.anthropic),
+  ds('Google',    LAB.google,    outputPriceData.google),
+  ds('DeepSeek',  LAB.deepseek,  outputPriceData.deepseek),
+  ds('MiniMax',   LAB.minimax,   outputPriceData.minimax),
+  ds('Alibaba',   LAB.alibaba,   outputPriceData.alibaba),
+  ds('xAI',       LAB.xai,       outputPriceData.xai),
+  ds('Moonshot',  LAB.moonshot,  outputPriceData.moonshot),
+  ds('Zhipu',     LAB.zhipu,     outputPriceData.zhipu)
+], 'Output price ($/1M tokens)');
+
+// ---------------- HISTORICAL BUBBLE CHART ----------------
+// Peak-to-trough drawdowns for the dominant infrastructure stock of each era
+const bubbleLabels = [
+  'RCA (Radio, 1929–32)',
+  'Lucent (Internet, 2000–02)',
+  'Nortel (Internet, 2000–02)',
+  'Cisco (Internet, 2000–02)',
+  'NVIDIA (AI, 2024–?)'
+];
+const bubbleDeclines = [-98, -99, -98, -88, 0]; // NVIDIA TBD
+const bubbleColors = [
+  '#8b6914',   // sepia for radio
+  '#3a86ff',   // dot-com blue
+  '#3a86ff',
+  '#3a86ff',
+  '#76b900'    // NVIDIA green
+];
+const bubbleRecovery = [
+  '~30+ years to recover',
+  'Never recovered (acquired)',
+  'Never recovered (bankrupt 2009)',
+  '25+ years to recover',
+  'Cycle in progress'
+];
+
+new Chart(document.getElementById('bubbleChart'), {
+  type: 'bar',
+  data: {
+    labels: bubbleLabels,
+    datasets: [{
+      label: 'Peak-to-trough decline (%)',
+      data: bubbleDeclines,
+      backgroundColor: bubbleColors,
+      borderColor: bubbleColors,
+      borderWidth: 1,
+      borderRadius: 4
+    }]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) {
+            const d = ctx.raw;
+            const r = bubbleRecovery[ctx.dataIndex];
+            return d === 0 ? `TBD — ${r}` : `${d}% drawdown — ${r}`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        min: -100,
+        max: 5,
+        title: { display: true, text: 'Peak-to-trough decline (%)', color: '#666', font: { size: 11 } },
+        grid: { color: '#f0f0eb' },
+        ticks: {
+          color: '#666',
+          font: { size: 10 },
+          callback: v => v + '%'
+        }
+      },
+      y: {
+        grid: { display: false },
+        ticks: { color: '#444', font: { size: 11 } }
+      }
+    }
+  }
+});
+
+// ---------------- COST STACK CHART (Part IV) ----------------
+// Stylized AI inference operating cost breakdown — today vs after chip commoditization.
+const stackLabels = ['Today (2026)', 'After commoditization (~2030)'];
+const stackData = {
+  chip:       [50, 15],   // chip / GPU amortization
+  electricity:[20, 45],   // power for compute
+  cooling:    [10, 15],   // cooling
+  network:    [12, 15],   // networking + datacenter infra
+  ops:        [ 8, 10]    // personnel + ops
+};
+const stackColors = {
+  chip:       '#76b900',  // NVIDIA green
+  electricity:'#f4a261',  // amber - power
+  cooling:    '#7cc4d4',  // teal - cooling
+  network:    '#6c757d',  // grey - infra
+  ops:        '#b08968'   // brown - people
+};
+
+new Chart(document.getElementById('costStackChart'), {
+  type: 'bar',
+  data: {
+    labels: stackLabels,
+    datasets: [
+      { label: 'Chip / GPU amortization', data: stackData.chip,        backgroundColor: stackColors.chip },
+      { label: 'Electricity',             data: stackData.electricity, backgroundColor: stackColors.electricity },
+      { label: 'Cooling',                 data: stackData.cooling,     backgroundColor: stackColors.cooling },
+      { label: 'Network & infra',         data: stackData.network,     backgroundColor: stackColors.network },
+      { label: 'Personnel & ops',         data: stackData.ops,         backgroundColor: stackColors.ops }
+    ]
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        position: 'bottom',
+        labels: { usePointStyle: true, padding: 14, font: { size: 12 } }
+      },
+      tooltip: {
+        callbacks: {
+          label: function(ctx) {
+            return `${ctx.dataset.label}: ${ctx.raw}%`;
+          }
+        }
+      }
+    },
+    scales: {
+      x: {
+        stacked: true,
+        min: 0,
+        max: 100,
+        title: { display: true, text: 'Share of operating cost (%)', color: '#666', font: { size: 11 } },
+        grid: { color: '#f0f0eb' },
+        ticks: { color: '#666', font: { size: 10 }, callback: v => v + '%' }
+      },
+      y: {
+        stacked: true,
+        grid: { display: false },
+        ticks: { color: '#444', font: { size: 11 } }
+      }
+    }
+  }
+});
+
+</script>
+</body>
+</html>
